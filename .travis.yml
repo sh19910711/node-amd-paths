@@ -20,3 +20,4 @@ deploy:
   on:
     tags: true
     repo: sh19910711/node-amd-paths
+    all_branches: true
