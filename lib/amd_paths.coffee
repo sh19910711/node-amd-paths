@@ -16,23 +16,31 @@ class AmdPaths
     realFilePaths = _.map filePaths, @_realPath
 
     # read all files
-    async.mapSeries realFilePaths, fs.readFile, (err, contents)->
+    async.mapSeries realFilePaths, fs.readFile, (err, contents)=>
       throw err if err
 
       # parse each contents
-      _.each contents, (content, ind)->
-        ast = acorn.parse(content)
-        walkAncestorOpts = {
-          CallExpression: (node)->
-            if _isDefineFunc(node)
-              if node.arguments[0].type == "Literal"
-                moduleName = node.arguments[0].value
-                configPaths[moduleName] = _toModuleName(realFilePaths[ind])
-        }
-        walk.ancestor ast, walkAncestorOpts
+      _.forEach contents, (content, ind)=>
+        _.assign configPaths, @findPaths(content, realFilePaths[ind])
 
       # return paths object
       callback configPaths
+
+  findPaths: (content, filePath)->
+    configPaths = {}
+
+    ast = acorn.parse(content)
+
+    walkAncestorOpts = {
+      CallExpression: (node)->
+        if _isDefineFunc(node)
+          if node.arguments[0].type == "Literal"
+            moduleName = node.arguments[0].value
+            configPaths[moduleName] = _toModuleName(filePath)
+    }
+    walk.ancestor ast, walkAncestorOpts
+
+    configPaths
 
   _toModuleName = (modulePath)->
     modulePath.slice 0, -1 * path.extname(modulePath).length
