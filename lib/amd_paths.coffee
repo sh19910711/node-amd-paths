@@ -26,6 +26,17 @@ class AmdPaths
       # return paths object
       callback configPaths
 
+  pathsSync: (filePaths)->
+    configPaths = {}
+    realFilePaths = _.map filePaths, @_realPath
+
+    _.forEach realFilePaths, (filePath, ind)=>
+      content = fs.readFileSync(filePath)
+      _.assign configPaths, @findPaths(content, filePath)
+
+    configPaths
+
+
   findPaths: (content, filePath)->
     configPaths = {}
 
