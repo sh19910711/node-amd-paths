@@ -1,0 +1,22 @@
+# http://docs.travis-ci.com/user/build-configuration/
+
+language: node_js
+
+node_js:
+  - '0.10'
+  - '0.11'
+
+before_script:
+  - npm install -g gulp
+
+script:
+  - gulp test
+
+deploy:
+  provider: npm
+  email: sh19910711@gmail.com
+  api_key:
+    secure: Bx85+L/XWFnPslaWvke1+koxlXZ4QJ0sOm8RQrndGl2+qLn7HqEemkxvRdZirZ9fHE+kziglWHAA5NOteJllvooPX8ankuVgmuhQA4ROdW5Kp0UVf4HMlhpQqpASYYDYST8rJ90oLbJKsLOW8iLlZi8JuOs1832nQXUhWTHnDkA=
+  on:
+    tags: true
+    repo: sh19910711/node-amd-paths
